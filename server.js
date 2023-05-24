@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 const consoleTable = require('console.table');
+const figlet = require('figlet');
 const util = require("util");
 
 // Connect to database
@@ -13,6 +14,13 @@ const connection = mysql.createConnection({
   password: 'Mahdi321123',
   database: 'employeeDB'
 });
+
+// Entrance Screen
+console.log(chalk.blue.bold('======================================================================================================='));
+console.log(``);
+console.log(chalk.red.bold(figlet.textSync('EMPLOYEE TRACKER')));
+console.log(``);
+console.log(chalk.blue.bold(`======================================================================================================`));
 
 // Start connection
 connection.connect(err => {
@@ -29,60 +37,60 @@ async function start() {
 	const answer = await inquirer.prompt({
 		name: 'selectOption',
 		type: 'list',
-		message: 'What would you like to do?',
+		message: 'Select an option below',
 		choices: [
-			'View All Departments',
-			'View All Roles',
-			'View All Employees',
-			'Add A Department',
-			'Add A Role',
-			'Add An Employee',
-			'Delete A Department',
-			'Delete A Role',
-			'Delete An Employee',
-			'Update A Role\'s Salary',
-			'Update An Employee\'s Role',
-			'Update An Employee\'s Manager',
+			'Show All Departments',
+			'Show All Roles',
+			'Show All Employees',
+			'Add Department',
+			'Add Role',
+			'Add Employee',
+			'Delete Department',
+			'Delete Role',
+			'Delete Employee',
+			'Update Role\'s Salary',
+			'Update Employee\'s Role',
+			'Update Employee\'s Manager',
 			'Exit'
 		]
 	});
 
     // Check which option was selected
 	switch (answer.selectOption) {
-		case 'View All Departments':
-			viewDepartments();
+		case 'Show All Departments':
+			showDepartments();
 			break;
-		case 'View All Roles':
-			viewRoles();
+		case 'Show All Roles':
+			showRoles();
 			break;
-		case 'View All Employees':
-			viewEmployees();
+		case 'Show All Employees':
+			showEmployees();
 			break;
-		case 'Add A Department':
+		case 'Add Department':
 			addDepartment();
 			break;
-		case 'Add A Role':
+		case 'Add Role':
 			addRole();
 			break;
-		case 'Add An Employee':
+		case 'Add Employee':
 			addEmployee();
 			break;
-		case 'Delete A Department':
+		case 'Delete Department':
 			deleteDepartment();
 			break;
-		case 'Delete A Role':
+		case 'Delete Role':
 			deleteRole();
 			break;
-		case 'Delete An Employee':
+		case 'Delete Employee':
 			deleteEmployee();
 			break;
-		case 'Update A Role\'s Salary':
+		case 'Update Role\'s Salary':
 			updateSalary();
 			break;
-		case 'Update An Employee\'s Role':
+		case 'Update Employee\'s Role':
 			updateRole();
 			break;
-		case 'Update An Employee\'s Manager':
+		case 'Update Employee\'s Manager':
 			updateManager();
 			break;
 		case 'Exit':
@@ -92,8 +100,8 @@ async function start() {
 	}
 };
 
-// Perform console table to view all the departments
-const viewDepartments = () => {
+// Perform console table to show all the departments
+const showDepartments = () => {
 	const query = 'SELECT * FROM department';
     connection.query(query, (err, res) => {
         if (err) throw err;
@@ -103,7 +111,7 @@ const viewDepartments = () => {
 };
 
 // Console table the roles
-const viewRoles = () => {
+const showRoles = () => {
 	const query = 'SELECT role.id, role.title, role.salary, department.name FROM role INNER JOIN department ON role.departmentId = department.id';
     connection.query(query, (err, res) => {
         if (err) throw err;
@@ -113,7 +121,7 @@ const viewRoles = () => {
 };
 
 // Console table the employees
-const viewEmployees = () => {	
+const showEmployees = () => {	
 	const query = 'SELECT e.id, CONCAT(e.firstName, " ", e.lastName) AS employeeName, role.title, role.salary, CONCAT(m.firstName, " ", m.lastName) AS managerName FROM employee e LEFT JOIN employee m ON m.id = e.managerId INNER JOIN role ON e.roleId = role.id';
 	connection.query(query, (err, res) => {
         if (err) throw err;
@@ -142,7 +150,7 @@ const addDepartment = () => {
 		);
 	console.log(chalk.bold.green('\nSUCCESS:'), 'Department was added.');
     // Show table after update
-	viewDepartments();
+	showDepartments();
 		});
 };
 
@@ -161,17 +169,17 @@ const addRole = () => {
                 {
                     type: 'input',
                     name: 'newRole',
-                    message: 'Enter title of new role...'
+                    message: 'Enter the title of their new role'
                 },
                 {
                     type: 'input',
                     name: 'salary',
-                    message: 'Enter salary of new role...',
+                    message: 'Enter salary',
                 },
                 {
                     type: 'list',
                     name: 'departmentId',
-                    message: 'Enter department of new role...',
+                    message: 'Enter department',
                     choices: departments,
                 },
             ])
@@ -187,8 +195,8 @@ const addRole = () => {
                         if (err) throw err;
                     }
                 );
-                console.log('added new employee role!')
-                viewRoles();
+                console.log('success, added new employee role')
+                showRoles();
             });
 
     });
@@ -212,23 +220,23 @@ const addEmployee = () => {
                 {
                     type: 'input',
                     name: 'firstName',
-                    message: 'Enter first name of new employee...'
+                    message: 'Enter the first name of the new employee'
                 },
                 {
                     type: 'input',
                     name: 'lastName',
-                    message: 'Enter last name of new employee...'
+                    message: 'Enter last name'
                 },
                 {
                     type: 'list',
                     name: 'role',
-                    message: 'Enter new employee role...',
+                    message: 'Enter new employee role',
                     choices: roles,
                 },
                 {
                     type: 'list',
                     name: 'managerId',
-                    message: 'select a manager id...',
+                    message: 'select the manager id',
                     choices: [1, 3, 5, 6, 7]
                 }
             ])
@@ -245,7 +253,7 @@ const addEmployee = () => {
                     (err) => {
                         if (err) throw err;
                         console.log('Updated Employee Roster;');
-                        viewEmployees();
+                        showEmployees();
 
                     }
                 );
@@ -261,7 +269,7 @@ async function deleteDepartment() {
 	const answer = await inquirer.prompt({
 		name: 'department',
 		type: 'list',
-		message: 'Department to Delete:',
+		message: 'Which Department to Delete:',
 		choices: () => {
 			const departments = [];
 			for (let i of res) {
@@ -272,7 +280,7 @@ async function deleteDepartment() {
 	});
 	await queryAsync('DELETE FROM department WHERE ?', { name: answer.department });
 	console.log(chalk.bold.green('\nSUCCESS:'), 'Department was deleted.');
-	viewDepartments();
+	showDepartments();
 };
 
 // Delete the selected role in the role table
@@ -281,7 +289,7 @@ async function deleteRole() {
 	const answer = await inquirer.prompt({
 		name: 'role',
 		type: 'list',
-		message: 'Role to Delete:',
+		message: 'Which Role to Delete:',
 		choices: () => {
 			const roles = [];
 			for (let i of res) {
@@ -292,7 +300,7 @@ async function deleteRole() {
 	});		
 	await queryAsync('DELETE FROM role WHERE ?', { title: answer.role });
 	console.log(chalk.bold.bgCyan('\nSUCCESS:'), 'Role was deleted.');
-	viewRoles();
+	showRoles();
 };
 
 // Delete the selected employee in the employee table
@@ -301,7 +309,7 @@ async function deleteEmployee() {
 	const answer = await inquirer.prompt({
 		name: 'employee',
 		type: 'list',
-		message: 'Employee to Delete:',
+		message: 'Which Employee to Delete:',
 		choices: () => {
 			const names = [];
 			for (let i of res) {
@@ -318,7 +326,7 @@ async function deleteEmployee() {
 	}		
 	await queryAsync('DELETE FROM employee WHERE ?', { id: deleteId });
 	console.log(chalk.bold.bgCyan('\nSUCCESS:'), 'Employee was deleted.');
-	viewEmployees();
+	showEmployees();
 };
 
 // Update selected salary in salary table
@@ -340,7 +348,7 @@ async function updateSalary() {
 		{
 			name: 'salary',
 			type: 'input',
-			message: 'New Salary:',
+			message: 'Enter the new salary:',
 			validate: value => {
 			  if (isNaN(value) === false) return true;
 			  return false;
@@ -349,7 +357,7 @@ async function updateSalary() {
 	]);				
 	await queryAsync('UPDATE role SET salary = ? WHERE title = ?', [answer.salary, answer.title]);	
 	console.log(chalk.bold.green('\nSUCCESS:'), 'Salary was updated.');
-	viewRoles();
+	showRoles();
 };
 
 // Update the selected role id in the employee table
@@ -358,7 +366,7 @@ async function updateRole() {
 	const answerE = await inquirer.prompt({
 		name: 'employee',
 		type: 'list',
-		message: 'Employee to Update:',
+		message: 'Select the employee you would like to update:',
 		choices: () => {
 			const names = [];
 			for (let i of resE) {
@@ -371,7 +379,7 @@ async function updateRole() {
 	const answerR = await inquirer.prompt({
 		name: 'role',
 		type: 'list',
-		message: 'New Role:',
+		message: 'Enter the new role:',
 		choices: () => {
 			const roles = [];
 			for (let i of resR) {
@@ -395,7 +403,7 @@ async function updateRole() {
 	}
 	await queryAsync('UPDATE employee SET roleId = ? WHERE id = ?', [newRoleId, employeeId]);	
 	console.log(chalk.bold.green('\nSUCCESS:'), 'Role was updated.');
-	viewEmployees();
+	showEmployees();
 };
 
 // Update the selected manager id in the employee table
@@ -405,7 +413,7 @@ async function updateManager() {
 		{
 			name: 'employee',
 			type: 'list',
-			message: 'Employee to Update:',
+			message: 'Select the employee you would like to update:',
 			choices: () => {
 				const names = [];
 				for (let i of res) {
@@ -417,7 +425,7 @@ async function updateManager() {
 		{
 			name: 'manager',
 			type: 'list',
-			message: 'New Manager:',
+			message: 'Enter new manager name:',
 			choices: () => {
 				const names = ['None'];
 				for (let i of res) {
@@ -438,6 +446,6 @@ async function updateManager() {
 		}
 	}	
 	await queryAsync('UPDATE employee SET managerId = ? WHERE id = ?', [newManagerId, employeeId]);	
-	console.log(chalk.bold.green('\nSUCCESS:'), 'Manager was updated.');
-	viewEmployees();
+	console.log(chalk.bold.green('\nSUCCESS:'), 'Manager updated.');
+	showEmployees();
 };
