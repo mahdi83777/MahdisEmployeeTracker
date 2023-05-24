@@ -132,13 +132,16 @@ const addDepartment = () => {
 	.then((data) => {
 		connection.query('INSERT INTO department SET ?',
 			{
+                // Sets the name to departmentName insterted from the user
 				name: data.departmentName,
 			},
+            // Throw an error if unsuccessful
 			function (err) {
 				if (err) throw err;
 			}
 		);
 	console.log(chalk.bold.green('\nSUCCESS:'), 'Department was added.');
+    // Show table after update
 	viewDepartments();
 		});
 };
@@ -268,7 +271,7 @@ async function deleteDepartment() {
 		}
 	});
 	await queryAsync('DELETE FROM department WHERE ?', { name: answer.department });
-	console.log(chalk.bold.bgCyan('\nSUCCESS:'), 'Department was deleted.');
+	console.log(chalk.bold.green('\nSUCCESS:'), 'Department was deleted.');
 	viewDepartments();
 };
 
@@ -345,11 +348,11 @@ async function updateSalary() {
 		}
 	]);				
 	await queryAsync('UPDATE role SET salary = ? WHERE title = ?', [answer.salary, answer.title]);	
-	console.log(chalk.bold.bgCyan('\nSUCCESS:'), 'Salary was updated.');
+	console.log(chalk.bold.green('\nSUCCESS:'), 'Salary was updated.');
 	viewRoles();
 };
 
-// update the role id in the employee table
+// Update the selected role id in the employee table
 async function updateRole() {
 	const resE = await queryAsync('SELECT employee.id, CONCAT(employee.firstName, " ", employee.lastName) AS employeeName, employee.roleId, employee.managerId FROM employee');	
 	const answerE = await inquirer.prompt({
@@ -391,11 +394,11 @@ async function updateRole() {
 		}
 	}
 	await queryAsync('UPDATE employee SET roleId = ? WHERE id = ?', [newRoleId, employeeId]);	
-	console.log(chalk.bold.bgCyan('\nSUCCESS:'), 'Role was updated.');
+	console.log(chalk.bold.green('\nSUCCESS:'), 'Role was updated.');
 	viewEmployees();
 };
 
-// update the manager id in the employee table
+// Update the selected manager id in the employee table
 async function updateManager() {
 	const res = await queryAsync('SELECT e.id, CONCAT(e.firstName, " ", e.lastName) AS employeeName, e.managerId, CONCAT(m.firstName, " ", m.lastName) AS managerName FROM employee e LEFT JOIN employee m ON m.id = e.managerId');	
 	const answer = await inquirer.prompt([
@@ -435,6 +438,6 @@ async function updateManager() {
 		}
 	}	
 	await queryAsync('UPDATE employee SET managerId = ? WHERE id = ?', [newManagerId, employeeId]);	
-	console.log(chalk.bold.bgCyan('\nSUCCESS:'), 'Manager was updated.');
+	console.log(chalk.bold.green('\nSUCCESS:'), 'Manager was updated.');
 	viewEmployees();
 };
