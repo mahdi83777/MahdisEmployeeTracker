@@ -1,36 +1,13 @@
-USE employeeTracker_db;
+USE employeeDB;
 
-INSERT INTO department
-(name)
+INSERT INTO department (name)
+VALUES ('Design'), ('Marketing');
 
-VALUES
-('Sales'),
-('Support'),
-('Marketing'),
-('Development');
+INSERT INTO role (title, salary, departmentId)
+VALUES ('Web Designer', 80000, 1), ('Design Director', 60000, 1), ('Print Director', 50000, 1), ('Creative Designer', 30000, 2), ('Marketing Manager', 90000, 2), ('Social Media Executive', 40000, 2);
 
-INSERT INTO role 
-(title, salary, department_id)
+INSERT INTO employee (firstName, lastName, roleId)
+VALUES ('Youssef', 'Hamade', 1), ('Alex', 'Johnson', 4), ('Cameron', 'Ruddy', 5);
 
-VALUES
-('Sales Manager', 60000, 1),
-('Sales Associate', 40000, 1),
-('Support Manager', 65000, 2),
-('Support Associate', 6500, 2),
-('Marketing Manager', 70000, 3),
-('Marketing Associate', 50000, 3),
-('Development Manager', 100000, 4),
-('Development Associate', 80000, 4);
-
-INSERT INTO employee
-(first_name, last_name, role_id, manager_id)
-
-VALUES
-('Mike', 'Miller', 1, 2),
-('John', 'Winters', 2, 1),
-('Lisa', 'Wright', 3, 4),
-('Steve', 'Streets', 4, 3),
-('Chris', 'Maple', 5, 6),
-('Heather', 'Williams', 6, 5),
-('Julie', 'Adams', 7, 8),
-('Dan', 'Klein', 8, 7);
+INSERT INTO employee (firstName, lastName, roleId, managerId)
+VALUES ('Lucy', 'Moffin', 2, 2), ('Lisa', 'Meyer', 3, 1), ('Connor', 'Nachbar', 6, 3);

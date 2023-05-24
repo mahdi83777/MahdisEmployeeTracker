@@ -1,50 +1,30 @@
-DROP DATABASE IF EXISTS employeeTracker_db;
+DROP DATABASE IF EXISTS employeeDB;
+CREATE DATABASE employeeDB;
 
-CREATE DATABASE employeeTracker_db;
+USE employeeDB;
 
-USE employeeTracker_db;
+-- DATABASE SCHEMA --
 
--- DATABASE SCHEMA CONTAINING THREE TABLES --
-
+-- set primary key to id --
 CREATE TABLE department (
-    id INT NOT NULL AUTO_INCREMENT,
-    
+	id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
-    
     PRIMARY KEY (id)
-  
-
 );
-
+-- role holds id, title, salary, departmentId --
 CREATE TABLE role (
-    id INT NOT NULL AUTO_INCREMENT,
-    -- to hold role title --
+	id INT NOT NULL AUTO_INCREMENT,
     title VARCHAR(30) NOT NULL,
-    -- to hold role salary --
-    salary DECIMAL NOT NULL,
-    -- to hold reference to department role belongs to --
-    department_id INT NOT NULL,
-    FOREIGN KEY (department_id) REFERENCES department(id),
+    salary INT NOT NULL,
+    departmentId INT NOT NULL,
     PRIMARY KEY (id)
-
-
 );
 
 CREATE TABLE employee (
-
-  id INT NOT NULL AUTO_INCREMENT,
-  -- to hold employee first name --
-  first_name VARCHAR(30) NOT NULL,
-  -- to hold employee last name --
-  last_name VARCHAR(30) NOT NULL,
-  --  to hold reference to role employee has --
-  role_id INT NOT NULL,
-  FOREIGN KEY (role_id) REFERENCES role(id),
-  -- to hold reference to another employee --
-  manager_id INT NOT NULL, 
-   -- alt FOREIGN KEY (role_id) REFERENCES role(id) -- 
-  FOREIGN KEY (manager_id) REFERENCES role(id),
-  PRIMARY KEY (id)
-
-
+	id INT NOT NULL AUTO_INCREMENT,
+    firstName VARCHAR(30) NOT NULL,
+    lastName VARCHAR(30) NOT NULL,
+    roleId INT NOT NULL,
+    managerId INT,
+    PRIMARY KEY (id)
 );
